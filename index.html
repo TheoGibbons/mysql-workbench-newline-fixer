@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>MySQL Workbench Newline Fixer</title>
+    <style>
+        /* Basic styling for the page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            margin-bottom: 20px;
+        }
+
+        #output {
+            display: none;
+        }
+
+        label {
+            font-weight: bold;
+        }
+    </style>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+
+<h1>MySQL Workbench Newline Fixer</h1>
+<p>
+    In MySQL Workbench, exporting data messes up newlines regardless of the format. Follow these steps to fix it:
+</p>
+<ol>
+    <li>Export your data as an <strong>Excel Spreadsheet (*.xml)</strong>.</li>
+</ol>
+
+<label for="input">2. Paste your exported XML content here:</label>
+<textarea id="input" placeholder="Paste your XML content here..."></textarea>
+
+<label class="output" for="output" style="display: none;">3. Fixed output:</label>
+<textarea class="output" id="output" readonly placeholder="Your processed content will appear here..." style="display: none;"></textarea>
+
+<script>
+  $(document).ready(function () {
+    $('#input').on('input', function () {
+      const input = $(this).val();
+
+      // Replace newlines within specific XML tags
+      const output = input.replace(
+        /<Cell><Data ss:Type="String">([\s\S]*?)<\/Data><\/Cell>/g,
+        (match, p1) =>
+          `<Cell><Data ss:Type="String">${p1.replace(/(\r\n|\r|\n)/g, "&#10;\n")}</Data></Cell>`
+      );
+
+      // Display the processed output
+      $('#output').val(output);
+      $('.output').show();
+    });
+  });
+</script>
+
+</body>
+</html>
